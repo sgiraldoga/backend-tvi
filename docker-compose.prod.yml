@@ -1,0 +1,48 @@
+services:
+  backend-tvi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tvi-backend
+    restart: always
+    ports:
+      - '${PORT:-3000}:3000'
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3000}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SYNCHRONIZE: 'false'
+      DB_LOGGING: 'false'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tvi-network
+
+  postgres:
+    image: postgres:17
+    container_name: tvi-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tvi-network
+
+volumes:
+  postgres_data:
+
+networks:
+  tvi-network:
