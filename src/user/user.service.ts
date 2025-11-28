@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -18,94 +19,41 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    // Verificar si el email ya existe
     const existingUser = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
+    if (existingUser) throw new ConflictException('El email ya está registrado');
 
-    if (existingUser) {
-      throw new ConflictException('El email ya está registrado');
-    }
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    // // Hash de la contraseña
-    // const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-
-    // Crear el usuario
     const user = this.userRepository.create({
       ...createUserDto,
-      // password: hashedPassword,
+      password: hashedPassword,
     });
 
-    const savedUser = await this.userRepository.save(user);
-
-    // Eliminar la contraseña de la respuesta
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = savedUser;
-
-    return userWithoutPassword as User;
+    return await this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({
-      select: [
-        'id',
-        'name',
-        'email',
-        'role',
-        'credits',
-        'createdAt',
-        'updatedAt',
-      ],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  async findOne(id: number): Promise<User> {
-    if (!id || id <= 0) {
-      throw new BadRequestException('ID inválido');
-    }
-
-    const user = await this.userRepository.findOne({
-      where: { id },
-      select: [
-        'id',
-        'name',
-        'email',
-        'role',
-        'credits',
-        'createdAt',
-        'updatedAt',
-      ],
-    });
-
-    if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
-    }
-
-    return user;
+    return this.userRepository.find({ order: { createdAt: 'DESC' } });
   }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({
       where: { email },
-      select: [
-        'id',
-        'name',
-        'email',
-        'password',
-        'role',
-        'credits',
-        'createdAt',
-        'updatedAt',
-      ],
+      select: ['id', 'email', 'password', 'role'],
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    // Verificar que el usuario existe
-    const user = await this.findOne(id);
+  async findOne(id: number): Promise<User> {
+    if (!id || id <= 0) throw new BadRequestException('ID inválido');
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    return user;
+  }
 
-    // Si se está actualizando el email, verificar que no exista
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
     if (updateUserDto.email && updateUserDto.email !== user.email) {
       const existingUser = await this.userRepository.findOne({
         where: { email: updateUserDto.email },
@@ -116,21 +64,17 @@ export class UserService {
       }
     }
 
-    // Si se está actualizando la contraseña, hashearla
-    // if (updateUserDto.password) {
-    //   updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-    // }
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
 
-    // Actualizar el usuario
     await this.userRepository.update(id, updateUserDto);
 
-    // Retornar el usuario actualizado
     return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
     const user = await this.findOne(id);
-
     await this.userRepository.remove(user);
   }
 

@@ -38,10 +38,7 @@ export class UserController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
@@ -53,10 +50,7 @@ export class UserController {
 
   @Post(':id/credits/add')
   @HttpCode(HttpStatus.OK)
-  addCredits(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('amount', ParseIntPipe) amount: number,
-  ) {
+  addCredits(@Param('id', ParseIntPipe) id: number, @Body('amount', ParseIntPipe) amount: number) {
     return this.userService.addCredits(id, amount);
   }
 
