@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { StarshipModule } from './starship/starship.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     AuthModule,
     UserModule,
+    StarshipModule,
   ],
   providers: [
     {
