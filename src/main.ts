@@ -12,4 +12,4 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap().catch((err) => console.error(err));
+bootstrap().catch(err => console.error(err));
