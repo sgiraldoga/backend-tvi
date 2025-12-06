@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import { DestiniesService } from './destinies.service';
 import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
@@ -18,17 +29,21 @@ export class DestiniesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.destiniesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.destiniesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDestinyDto: UpdateDestinyDto) {
-    return this.destiniesService.update(+id, updateDestinyDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDestinyDto: UpdateDestinyDto,
+  ) {
+    return this.destiniesService.update(id, updateDestinyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.destiniesService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.destiniesService.remove(id);
   }
 }
