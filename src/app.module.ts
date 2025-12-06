@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
+import { DestiniesModule } from './destinies/destinies.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
@@ -29,6 +30,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     AuthModule,
     UserModule,
+    DestiniesModule,
   ],
   providers: [
     {
