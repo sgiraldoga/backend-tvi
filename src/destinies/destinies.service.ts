@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -32,9 +33,19 @@ export class DestiniesService {
 
   async create(createDestinyDto: CreateDestinyDto) {
     const destiny = this.destinyRepository.create(createDestinyDto);
-    const savedDestiny = await this.destinyRepository.save(destiny);
 
-    return savedDestiny;
+    try {
+      const savedDestiny = await this.destinyRepository.save(destiny);
+
+      return savedDestiny;
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException(
+          'El destino ya existe o el nombre está duplicado',
+        );
+      }
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findAll() {

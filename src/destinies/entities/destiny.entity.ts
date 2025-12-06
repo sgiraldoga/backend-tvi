@@ -6,7 +6,7 @@ export class Destiny {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ unique: true, type: 'varchar', length: 255 })
   name: string;
 
   @Column({ type: 'text' })
