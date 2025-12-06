@@ -24,6 +24,11 @@ export class CreateDestinyDto {
   @IsNotEmpty({ message: 'La imagen es requerida' })
   image: string;
 
+  @IsNumber()
+  @IsPositive({ message: 'El precio debe ser un número positivo' })
+  @IsNotEmpty({ message: 'El precio es requerido' })
+  price: number;
+
   @IsString({ message: 'El sistema debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El sistema es requerido' })
   system: string;

@@ -17,6 +17,7 @@ export class DestiniesService {
     'name',
     'description',
     'image',
+    'price',
     'system',
     'gravity',
     'atmosphere',

@@ -15,6 +15,9 @@ export class Destiny {
   @Column({ type: 'varchar', length: 255 })
   image: string;
 
+  @Column({ type: 'int' })
+  price: number;
+
   @Column({ type: 'varchar', length: 255 })
   system: string;
 
