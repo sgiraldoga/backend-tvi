@@ -13,11 +13,13 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Roles('admin')
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto) {
@@ -38,28 +40,25 @@ export class UserController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
+  @Roles('admin')
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
   }
 
+  @Roles('admin')
   @Post(':id/credits/add')
   @HttpCode(HttpStatus.OK)
-  addCredits(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('amount', ParseIntPipe) amount: number,
-  ) {
+  addCredits(@Param('id', ParseIntPipe) id: number, @Body('amount', ParseIntPipe) amount: number) {
     return this.userService.addCredits(id, amount);
   }
 
+  @Roles('admin')
   @Post(':id/credits/subtract')
   @HttpCode(HttpStatus.OK)
   subtractCredits(

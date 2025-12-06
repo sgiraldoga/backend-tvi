@@ -31,7 +31,7 @@ Crea un archivo `.env` en la raíz del proyecto:
 cp .env.example .env
 ```
 
-Edita el archivo `.env` con las credenciales de la base de datos postgres
+Edita el archivo `.env` con las credenciales de la base de datos postgres y las claves secretas de jwt
 
 ### 4. Levantar la base de datos con Docker
 
