@@ -110,6 +110,7 @@ export class AuthService {
       }),
     ]);
 
-    return { accessToken, refreshToken };
+    const userInfo = await this.userService.findOne(user.id);
+    return { accessToken, refreshToken, user: userInfo };
   }
 }
