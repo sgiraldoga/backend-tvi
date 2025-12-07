@@ -109,4 +109,14 @@ export class UserService {
 
     return this.findOne(id);
   }
+
+  async updateProfile(id: number, updates: Partial<User>): Promise<User> {
+    await this.findOne(id);
+    await this.userRepository.update(id, updates);
+    return this.findOne(id);
+  }
+
+  async updatePassword(id: number, hashedPassword: string): Promise<void> {
+    await this.userRepository.update(id, { password: hashedPassword });
+  }
 }
