@@ -7,6 +7,7 @@ import { DestiniesModule } from './destinies/destinies.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     AuthModule,
     UserModule,
     DestiniesModule,
+    ReviewsModule,
   ],
   providers: [
     {

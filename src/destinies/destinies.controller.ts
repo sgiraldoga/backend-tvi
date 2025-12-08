@@ -34,10 +34,7 @@ export class DestiniesController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateDestinyDto: UpdateDestinyDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateDestinyDto: UpdateDestinyDto) {
     return this.destiniesService.update(id, updateDestinyDto);
   }
 

@@ -1,6 +1,8 @@
+import { Review } from 'src/reviews/entities/review.entity';
 import {
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -31,4 +33,7 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @OneToMany(() => Review, review => review.author)
+  reviews: Review[];
 }

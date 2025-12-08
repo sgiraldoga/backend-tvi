@@ -41,9 +41,7 @@ export class DestiniesService {
       return savedDestiny;
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException(
-          'El destino ya existe o el nombre está duplicado',
-        );
+        throw new ConflictException('El destino ya existe o el nombre está duplicado');
       }
       throw new BadRequestException(error.message);
     }
