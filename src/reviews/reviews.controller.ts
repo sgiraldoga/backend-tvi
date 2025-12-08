@@ -5,12 +5,14 @@ import {
   Body,
   Param,
   Delete,
+  Query,
   ParseIntPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { FilterReviewDto } from './dto/filter-review.dto';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -22,8 +24,8 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  findAll(@Query() filters: FilterReviewDto) {
+    return this.reviewsService.findAll(filters);
   }
 
   @Get(':id')
