@@ -25,9 +25,6 @@ export class User {
   @Column({ type: 'varchar', length: 50, default: 'user' })
   role: 'user' | 'admin';
 
-  @Column({ type: 'int', default: 0 })
-  credits: number;
-
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
