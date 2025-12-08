@@ -17,7 +17,7 @@ export class DestiniesService {
     'id',
     'name',
     'description',
-    'image',
+    'images',
     'price',
     'system',
     'gravity',

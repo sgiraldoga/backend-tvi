@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsEnum, IsNumber, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { AtmosphereType } from '../enums/atmosphere-type.enum';
+import { AtmosphereType } from '../../enums/atmosphere-type.enum';
 
 export class FilterDestinyDto {
   @ApiPropertyOptional({

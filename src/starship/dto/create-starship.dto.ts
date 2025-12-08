@@ -1,5 +1,7 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { StatusEnum } from 'src/enums/starship-status.enum';
+import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
+import { CreateCabinDto } from 'src/cabin/dto/create-cabin.dto';
+import { StarshipStatus } from 'src/enums/starship-status.enum';
 
 export class CreateStarshipDto {
   @IsString()
@@ -14,12 +16,14 @@ export class CreateStarshipDto {
   @IsNotEmpty({ message: 'La capacidad es requerida' })
   capacity: number;
 
-  @IsNotEmpty({ message: 'La velocidad es requerida' })
-  speed: number;
-
   @IsNotEmpty({ message: 'El estado es requerido' })
-  status: StatusEnum;
+  status: StarshipStatus;
 
   @IsNotEmpty({ message: 'Las comodidades son requeridas' })
   amenities: string[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateCabinDto)
+  cabins: CreateCabinDto[];
 }

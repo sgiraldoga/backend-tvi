@@ -1,26 +1,43 @@
 import { Destiny } from 'src/destinies/entities/destiny.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Check,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity('reviews')
+@Entity('review')
 export class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.reviews)
+  @ManyToOne(() => User, { eager: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'author_id' })
   author: User;
 
-  @ManyToOne(() => Destiny, destiny => destiny.reviews)
+  @ManyToOne(() => Destiny, { eager: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'destiny_id' })
   destiny: Destiny;
 
-  @Column()
+  @Column({ type: 'text' })
   content: string;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'int' })
+  @Check(`"rating" >= 1 AND "rating" <= 5`)
   rating: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @Column({
+    type: 'json',
+    nullable: true,
+    default: [],
+    name: 'liked_by_users',
+  })
+  likedByUsers: number[];
 }

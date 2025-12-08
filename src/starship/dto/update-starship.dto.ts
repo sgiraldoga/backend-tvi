@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType, OmitType } from '@nestjs/mapped-types';
 import { CreateStarshipDto } from './create-starship.dto';
 
-export class UpdateStarshipDto extends PartialType(CreateStarshipDto) {}
+export class UpdateStarshipDto extends PartialType(
+  OmitType(CreateStarshipDto, ['cabins'] as const),
+) {}
