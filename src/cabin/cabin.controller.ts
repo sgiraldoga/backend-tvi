@@ -12,16 +12,19 @@ import {
 } from '@nestjs/common';
 import { CabinService } from './cabin.service';
 import { UpdateCabinDto } from './dto/update-cabin.dto';
-import { CreateCabinStandaloneDto } from './dto/create-cabin-standalone.dto';
+import { CreateCabinDto } from './dto/create-cabin.dto';
 
 @Controller('cabin')
 export class CabinController {
   constructor(private readonly cabinService: CabinService) {}
 
-  @Post()
+  @Post(':starshipId')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createCabinDto: CreateCabinStandaloneDto) {
-    return this.cabinService.create(createCabinDto);
+  create(
+    @Param('starshipId', ParseIntPipe) starshipId: number,
+    @Body() createCabinDto: CreateCabinDto,
+  ) {
+    return this.cabinService.create(starshipId, createCabinDto);
   }
 
   @Get()

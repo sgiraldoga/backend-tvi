@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateCabinStandaloneDto } from './dto/create-cabin-standalone.dto';
 import { UpdateCabinDto } from './dto/update-cabin.dto';
 import { Cabin } from './entities/cabin.entity';
 import { Starship } from 'src/starship/entities/starship.entity';
+import { CreateCabinDto } from './dto/create-cabin.dto';
 
 @Injectable()
 export class CabinService {
@@ -16,9 +16,7 @@ export class CabinService {
     private readonly starshipRepository: Repository<Starship>,
   ) {}
 
-  async create(createCabinDto: CreateCabinStandaloneDto): Promise<Cabin> {
-    const { starshipId, ...cabinData } = createCabinDto;
-
+  async create(starshipId: number, createCabinDto: CreateCabinDto): Promise<Cabin> {
     const starship = await this.starshipRepository.findOne({
       where: { id: starshipId },
     });
@@ -28,7 +26,7 @@ export class CabinService {
     }
 
     const cabin = this.cabinRepository.create({
-      ...cabinData,
+      ...createCabinDto,
       starship,
     });
     await this.cabinRepository.save(cabin);
