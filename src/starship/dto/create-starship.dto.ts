@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { StatusEnum } from 'src/enums/starship-status.enum';
+import { StarshipStatus } from 'src/enums/starship-status.enum';
 
 export class CreateStarshipDto {
   @IsString()
@@ -18,7 +18,7 @@ export class CreateStarshipDto {
   speed: number;
 
   @IsNotEmpty({ message: 'El estado es requerido' })
-  status: StatusEnum;
+  status: StarshipStatus;
 
   @IsNotEmpty({ message: 'Las comodidades son requeridas' })
   amenities: string[];

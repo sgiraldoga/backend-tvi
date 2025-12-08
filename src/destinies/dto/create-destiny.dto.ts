@@ -9,7 +9,7 @@ import {
   IsInt,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { AtmosphereType } from '../enums/atmosphere-type.enum';
+import { AtmosphereType } from '../../enums/atmosphere-type.enum';
 
 export class CreateDestinyDto {
   @ApiProperty({

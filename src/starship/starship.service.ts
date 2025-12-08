@@ -4,7 +4,7 @@ import { UpdateStarshipDto } from './dto/update-starship.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starship } from './entities/starship.entity';
 import { Repository } from 'typeorm';
-import { StatusEnum } from 'src/enums/starship-status.enum';
+import { StarshipStatus } from 'src/enums/starship-status.enum';
 
 @Injectable()
 export class StarshipService {
@@ -37,7 +37,7 @@ export class StarshipService {
     await this.starshipRepository.softDelete(id);
   }
 
-  async updateStatus(id: number, status: StatusEnum): Promise<Starship> {
+  async updateStatus(id: number, status: StarshipStatus): Promise<Starship> {
     await this.starshipRepository.update(id, { status });
     return this.findOne(id);
   }
