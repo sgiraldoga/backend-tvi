@@ -79,37 +79,6 @@ export class UserService {
     await this.userRepository.remove(user);
   }
 
-  async addCredits(id: number, amount: number): Promise<User> {
-    if (amount <= 0) {
-      throw new BadRequestException('La cantidad debe ser mayor a 0');
-    }
-
-    const user = await this.findOne(id);
-    user.credits += amount;
-
-    await this.userRepository.save(user);
-
-    return this.findOne(id);
-  }
-
-  async subtractCredits(id: number, amount: number): Promise<User> {
-    if (amount <= 0) {
-      throw new BadRequestException('La cantidad debe ser mayor a 0');
-    }
-
-    const user = await this.findOne(id);
-
-    if (user.credits < amount) {
-      throw new BadRequestException('Créditos insuficientes');
-    }
-
-    user.credits -= amount;
-
-    await this.userRepository.save(user);
-
-    return this.findOne(id);
-  }
-
   async updateProfile(id: number, updates: Partial<User>): Promise<User> {
     await this.findOne(id);
     await this.userRepository.update(id, updates);

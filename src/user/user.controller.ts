@@ -50,21 +50,4 @@ export class UserController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
   }
-
-  @Roles('admin')
-  @Post(':id/credits/add')
-  @HttpCode(HttpStatus.OK)
-  addCredits(@Param('id', ParseIntPipe) id: number, @Body('amount', ParseIntPipe) amount: number) {
-    return this.userService.addCredits(id, amount);
-  }
-
-  @Roles('admin')
-  @Post(':id/credits/subtract')
-  @HttpCode(HttpStatus.OK)
-  subtractCredits(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('amount', ParseIntPipe) amount: number,
-  ) {
-    return this.userService.subtractCredits(id, amount);
-  }
 }
