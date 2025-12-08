@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   ParseIntPipe,
   HttpStatus,
   HttpCode,
@@ -13,6 +14,7 @@ import {
 import { DestiniesService } from './destinies.service';
 import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
+import { FilterDestinyDto } from './dto/filter-destiny.dto';
 
 @Controller('destinies')
 export class DestiniesController {
@@ -24,8 +26,8 @@ export class DestiniesController {
   }
 
   @Get()
-  findAll() {
-    return this.destiniesService.findAll();
+  findAll(@Query() filters: FilterDestinyDto) {
+    return this.destiniesService.findAll(filters);
   }
 
   @Get(':id')
@@ -34,10 +36,7 @@ export class DestiniesController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateDestinyDto: UpdateDestinyDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateDestinyDto: UpdateDestinyDto) {
     return this.destiniesService.update(id, updateDestinyDto);
   }
 

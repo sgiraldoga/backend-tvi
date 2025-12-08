@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AtmosphereType } from '../enums/atmosphere-type.enum';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Entity('destinies')
 export class Destiny {
@@ -42,4 +43,7 @@ export class Destiny {
 
   @Column({ type: 'float' })
   distance: number;
+
+  @OneToMany(() => Review, review => review.destiny)
+  reviews: Review[];
 }
