@@ -1,5 +1,6 @@
+import { Cabin } from 'src/cabin/entities/cabin.entity';
 import { StarshipStatus } from 'src/enums/starship-status.enum';
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('starship')
 export class Starship {
@@ -23,4 +24,7 @@ export class Starship {
 
   @DeleteDateColumn({ name: 'deleted_at', select: false })
   deletedAt: Date;
+
+  @OneToMany(() => Cabin, cabin => cabin.starship, { eager: false, cascade: ['insert'] })
+  cabins: Cabin[];
 }
