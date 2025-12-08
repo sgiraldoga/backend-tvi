@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { ReviewsModule } from './reviews/reviews.module';
+import { StarshipModule } from './starship/starship.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     }),
     AuthModule,
     UserModule,
+    StarshipModule,
     DestiniesModule,
     ReviewsModule,
   ],
