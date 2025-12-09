@@ -13,6 +13,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@ne
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('review')
 @ApiBearerAuth('JWT-auth')
@@ -53,6 +54,30 @@ export class ReviewsController {
   @ApiResponse({ status: 404, description: 'Reseña no encontrada' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.reviewsService.findOne(id);
+  }
+
+  @Post('like/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Dar like a una reseña' })
+  @ApiParam({ name: 'id', description: 'ID de la reseña', type: Number })
+  @ApiResponse({ status: 200, description: 'Like agregado exitosamente' })
+  @ApiResponse({ status: 400, description: 'Ya has dado like a esta reseña' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Reseña no encontrada' })
+  addLike(@Param('id', ParseIntPipe) id: number, @CurrentUser('userId') userId: number) {
+    return this.reviewsService.addLike(id, userId);
+  }
+
+  @Delete('like/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Quitar like de una reseña' })
+  @ApiParam({ name: 'id', description: 'ID de la reseña', type: Number })
+  @ApiResponse({ status: 200, description: 'Like removido exitosamente' })
+  @ApiResponse({ status: 400, description: 'No has dado like a esta reseña' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Reseña no encontrada' })
+  removeLike(@Param('id', ParseIntPipe) id: number, @CurrentUser('userId') userId: number) {
+    return this.reviewsService.removeLike(id, userId);
   }
 
   @Delete(':id')

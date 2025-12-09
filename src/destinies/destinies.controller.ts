@@ -18,6 +18,7 @@ import { UpdateDestinyDto } from './dto/update-destiny.dto';
 import { FilterDestinyDto } from './dto/filter-destiny.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('destiny')
 @ApiBearerAuth('JWT-auth')
@@ -93,6 +94,30 @@ export class DestiniesController {
   @ApiResponse({ status: 404, description: 'Destino no encontrado' })
   update(@Param('id', ParseIntPipe) id: number, @Body() updateDestinyDto: UpdateDestinyDto) {
     return this.destiniesService.update(id, updateDestinyDto);
+  }
+
+  @Post('like/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Dar like a un destino' })
+  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
+  @ApiResponse({ status: 200, description: 'Like agregado exitosamente' })
+  @ApiResponse({ status: 400, description: 'Ya has dado like a este destino' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  addLike(@Param('id', ParseIntPipe) id: number, @CurrentUser('userId') userId: number) {
+    return this.destiniesService.addLike(id, userId);
+  }
+
+  @Delete('like/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Quitar like de un destino' })
+  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
+  @ApiResponse({ status: 200, description: 'Like removido exitosamente' })
+  @ApiResponse({ status: 400, description: 'No has dado like a este destino' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  removeLike(@Param('id', ParseIntPipe) id: number, @CurrentUser('userId') userId: number) {
+    return this.destiniesService.removeLike(id, userId);
   }
 
   @Roles('admin')

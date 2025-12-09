@@ -143,6 +143,39 @@ export class DestiniesService {
     await this.activityRepository.softDelete({ destiny: { id } });
   }
 
+  async addLike(destinyId: number, userId: number): Promise<any> {
+    const destiny = await this.destinyRepository.findOne({ where: { id: destinyId } });
+    if (!destiny) {
+      throw new NotFoundException(`Destino con ID ${destinyId} no encontrado`);
+    }
+
+    if (destiny.likedByUsers && destiny.likedByUsers.includes(userId)) {
+      throw new BadRequestException('Ya has dado like a este destino');
+    }
+
+    const likedByUsers = destiny.likedByUsers || [];
+    likedByUsers.push(userId);
+
+    await this.destinyRepository.update(destinyId, { likedByUsers });
+    return { message: 'Like agregado exitosamente', likedByUsers };
+  }
+
+  async removeLike(destinyId: number, userId: number): Promise<any> {
+    const destiny = await this.destinyRepository.findOne({ where: { id: destinyId } });
+    if (!destiny) {
+      throw new NotFoundException(`Destino con ID ${destinyId} no encontrado`);
+    }
+
+    if (!destiny.likedByUsers || !destiny.likedByUsers.includes(userId)) {
+      throw new BadRequestException('No has dado like a este destino');
+    }
+
+    const likedByUsers = destiny.likedByUsers.filter(id => id !== userId);
+
+    await this.destinyRepository.update(destinyId, { likedByUsers });
+    return { message: 'Like removido exitosamente', likedByUsers };
+  }
+
   async getReviewsSummary(destinyId: number) {
     const destiny = await this.destinyRepository.findOne({ where: { id: destinyId } });
     if (!destiny) {

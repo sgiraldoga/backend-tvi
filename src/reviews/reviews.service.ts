@@ -87,4 +87,37 @@ export class ReviewsService {
     }
     await this.reviewRepository.remove(review);
   }
+
+  async addLike(reviewId: number, userId: number): Promise<any> {
+    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    if (!review) {
+      throw new NotFoundException(`Review con ID ${reviewId} no encontrada`);
+    }
+
+    if (review.likedByUsers && review.likedByUsers.includes(userId)) {
+      throw new BadRequestException('Ya has dado like a esta reseña');
+    }
+
+    const likedByUsers = review.likedByUsers || [];
+    likedByUsers.push(userId);
+
+    await this.reviewRepository.update(reviewId, { likedByUsers });
+    return { message: 'Like agregado exitosamente', likedByUsers };
+  }
+
+  async removeLike(reviewId: number, userId: number): Promise<any> {
+    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    if (!review) {
+      throw new NotFoundException(`Review con ID ${reviewId} no encontrada`);
+    }
+
+    if (!review.likedByUsers || !review.likedByUsers.includes(userId)) {
+      throw new BadRequestException('No has dado like a esta reseña');
+    }
+
+    const likedByUsers = review.likedByUsers.filter(id => id !== userId);
+
+    await this.reviewRepository.update(reviewId, { likedByUsers });
+    return { message: 'Like removido exitosamente', likedByUsers };
+  }
 }
