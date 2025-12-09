@@ -12,9 +12,9 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@ApiTags('bookings')
+@ApiTags('booking')
 @ApiBearerAuth('JWT-auth')
-@Controller('bookings')
+@Controller('booking')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 

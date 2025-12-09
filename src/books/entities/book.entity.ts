@@ -14,7 +14,7 @@ import { Cabin } from '../../cabin/entities/cabin.entity';
 import { Ticket } from '../../tickets/entities/ticket.entity';
 import { BookingStatus } from '../../enums/booking-status.enum';
 
-@Entity('bookings')
+@Entity('booking')
 export class Book {
   @PrimaryGeneratedColumn()
   id: number;

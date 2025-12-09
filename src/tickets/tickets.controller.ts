@@ -2,9 +2,9 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { TicketsService } from './tickets.service';
 
-@ApiTags('tickets')
+@ApiTags('ticket')
 @ApiBearerAuth('JWT-auth')
-@Controller('tickets')
+@Controller('ticket')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
