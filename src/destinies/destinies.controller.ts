@@ -17,6 +17,7 @@ import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
 import { FilterDestinyDto } from './dto/filter-destiny.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('destiny')
 @ApiBearerAuth('JWT-auth')
@@ -35,6 +36,7 @@ export class DestiniesController {
     return this.destiniesService.create(createDestinyDto);
   }
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Obtener todos los destinos con filtros y paginación' })
   @ApiResponse({ status: 200, description: 'Lista de destinos obtenida exitosamente' })
@@ -43,6 +45,7 @@ export class DestiniesController {
     return this.destiniesService.findAll(filters);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un destino por ID' })
   @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
@@ -53,6 +56,7 @@ export class DestiniesController {
     return this.destiniesService.findOne(id);
   }
 
+  @Public()
   @Get('reviews-summary/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Obtener resumen de reseñas de un destino' })

@@ -14,6 +14,7 @@ import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('activity')
 export class ActivityController {
@@ -29,6 +30,7 @@ export class ActivityController {
     return this.activityService.create(destinyId, createActivityDto);
   }
 
+  @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
@@ -41,6 +43,7 @@ export class ActivityController {
     return this.activityService.findOne(id);
   }
 
+  @Public()
   @Get('destiny/:destinyId')
   @HttpCode(HttpStatus.OK)
   findByDestiny(@Param('destinyId', ParseIntPipe) destinyId: number) {

@@ -12,6 +12,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('review')
 @ApiBearerAuth('JWT-auth')
@@ -30,6 +31,7 @@ export class ReviewsController {
     return this.reviewsService.create(createReviewDto);
   }
 
+  @Public()
   @Get('destiny/:destinyId')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Obtener todas las reseñas de un destino' })
@@ -41,6 +43,7 @@ export class ReviewsController {
     return this.reviewsService.findByDestiny(destinyId);
   }
 
+  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Obtener una reseña por ID' })

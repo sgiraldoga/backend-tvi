@@ -10,6 +10,7 @@ import {
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @ApiTags('bookings')
 @ApiBearerAuth('JWT-auth')
@@ -27,6 +28,7 @@ export class BooksController {
     return this.booksService.create(createBookDto);
   }
 
+  @Roles('admin')
   @Get()
   @ApiOperation({ summary: 'Obtener todas las reservas' })
   @ApiResponse({ status: 200, description: 'Lista de reservas' })
