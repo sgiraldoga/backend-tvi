@@ -7,9 +7,23 @@ import {
   IsNumberString,
   IsPositive,
   IsInt,
+  IsArray,
+  ArrayMinSize,
+  ValidateNested,
+  IsObject,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { AtmosphereType } from '../../enums/atmosphere-type.enum';
+import { CreateActivityDto } from 'src/activity/dto/create-activity.dto';
+
+class PositionDto {
+  @IsNumber()
+  x: number;
+
+  @IsNumber()
+  y: number;
+}
 
 export class CreateDestinyDto {
   @ApiProperty({
@@ -29,31 +43,15 @@ export class CreateDestinyDto {
   description: string;
 
   @ApiProperty({
-    description: 'URL de la imagen del destino',
-    example: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9',
+    description: 'URLs de las imágenes del destino',
+    example: ['https://images.unsplash.com/photo-1614728894747-a83421e2b9c9'],
+    type: [String],
   })
-  @IsString({ message: 'La imagen debe ser una URL' })
-  @IsUrl()
-  @IsNotEmpty({ message: 'La imagen es requerida' })
-  image: string;
-
-  @ApiProperty({
-    description: 'Precio del viaje en créditos',
-    example: 50000,
-    minimum: 0,
-  })
-  @IsNumber()
-  @IsPositive({ message: 'El precio debe ser un número positivo' })
-  @IsNotEmpty({ message: 'El precio es requerido' })
-  price: number;
-
-  @ApiProperty({
-    description: 'Sistema estelar donde se encuentra el destino',
-    example: 'Sistema Solar',
-  })
-  @IsString({ message: 'El sistema debe ser una cadena de texto' })
-  @IsNotEmpty({ message: 'El sistema es requerido' })
-  system: string;
+  @IsArray({ message: 'Las imágenes deben ser un array' })
+  @ArrayMinSize(1, { message: 'Debe proporcionar al menos una imagen' })
+  @IsUrl({}, { each: true, message: 'Cada imagen debe ser una URL válida' })
+  @IsNotEmpty({ message: 'Las imágenes son requeridas' })
+  images: string[];
 
   @ApiProperty({
     description: 'Gravedad en m/s²',
@@ -66,15 +64,12 @@ export class CreateDestinyDto {
   gravity: number;
 
   @ApiProperty({
-    description: 'Tipo de atmósfera',
-    enum: AtmosphereType,
-    example: AtmosphereType.NOT_BREATHABLE,
+    description: 'Sistema estelar donde se encuentra el destino',
+    example: 'Sistema Solar',
   })
-  @IsEnum(AtmosphereType, {
-    message: 'La atmosfera debe ser respirable, no respirable, tóxica o nula',
-  })
-  @IsNotEmpty({ message: 'La atmosfera es requerida' })
-  atmosphere: AtmosphereType;
+  @IsString({ message: 'El sistema debe ser una cadena de texto' })
+  @IsNotEmpty({ message: 'El sistema es requerido' })
+  system: string;
 
   @ApiProperty({
     description: 'Duración del ciclo día/noche en horas',
@@ -85,6 +80,17 @@ export class CreateDestinyDto {
   @IsPositive({ message: 'El ciclo diurno debe ser un número positivo' })
   @IsNotEmpty({ message: 'El ciclo diurno es requerido' })
   dayNightCycle: number;
+
+  @ApiProperty({
+    description: 'Tipo de atmósfera',
+    enum: AtmosphereType,
+    example: AtmosphereType.NOT_BREATHABLE,
+  })
+  @IsEnum(AtmosphereType, {
+    message: 'La atmosfera debe ser respirable, no respirable, tóxica o nula',
+  })
+  @IsNotEmpty({ message: 'La atmosfera es requerida' })
+  atmosphere: AtmosphereType;
 
   @ApiProperty({
     description: 'Población del destino',
@@ -112,4 +118,29 @@ export class CreateDestinyDto {
   @IsPositive({ message: 'La distancia debe ser un número positivo' })
   @IsNotEmpty({ message: 'La distancia es requerida' })
   distance: number;
+
+  @ApiProperty({
+    description: 'Posición en el mapa galáctico',
+    example: { x: 100, y: 200 },
+  })
+  @IsObject({ message: 'La posición debe ser un objeto' })
+  @ValidateNested()
+  @Type(() => PositionDto)
+  @IsNotEmpty({ message: 'La posición es requerida' })
+  position: { x: number; y: number };
+
+  @ApiProperty({
+    description: 'Precio del viaje en créditos',
+    example: 50000,
+    minimum: 0,
+  })
+  @IsNumber()
+  @IsPositive({ message: 'El precio debe ser un número positivo' })
+  @IsNotEmpty({ message: 'El precio es requerido' })
+  price: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateActivityDto)
+  activities: CreateActivityDto[];
 }
