@@ -1,13 +1,4 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinLength,
-  Min,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -27,9 +18,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(['user', 'admin'], { message: 'El rol debe ser user o admin' })
   role?: 'user' | 'admin';
-
-  @IsOptional()
-  @IsNumber({}, { message: 'Los créditos deben ser un número' })
-  @Min(0, { message: 'Los créditos no pueden ser negativos' })
-  credits?: number;
 }

@@ -34,6 +34,17 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "prettier/prettier": ["error", { endOfLine: "auto" }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      eqeqeq: "error",
+      semi: ["error", "always"],
+      "no-extra-semi": "error",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 );

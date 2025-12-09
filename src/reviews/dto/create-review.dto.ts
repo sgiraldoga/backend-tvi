@@ -1,0 +1,44 @@
+import { IsInt, IsNotEmpty, IsPositive, IsString, Max, Min } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateReviewDto {
+  @ApiProperty({
+    description: 'ID del usuario autor de la reseña',
+    example: 1,
+    minimum: 1,
+  })
+  @IsInt({ message: 'El ID del autor debe ser un número entero' })
+  @IsPositive({ message: 'El ID del autor debe ser positivo' })
+  @IsNotEmpty({ message: 'El ID del autor es requerido' })
+  authorId: number;
+
+  @ApiProperty({
+    description: 'ID del destino que se está reseñando',
+    example: 1,
+    minimum: 1,
+  })
+  @IsInt({ message: 'El ID del destino debe ser un número entero' })
+  @IsPositive({ message: 'El ID del destino debe ser positivo' })
+  @IsNotEmpty({ message: 'El ID del destino es requerido' })
+  destinyId: number;
+
+  @ApiProperty({
+    description: 'Contenido de la reseña',
+    example: 'Increíble experiencia en Marte. Los paisajes rojos son impresionantes.',
+  })
+  @IsString({ message: 'El contenido debe ser una cadena de texto' })
+  @IsNotEmpty({ message: 'El contenido es requerido' })
+  content: string;
+
+  @ApiProperty({
+    description: 'Calificación del destino (1-5 estrellas)',
+    example: 5,
+    minimum: 1,
+    maximum: 5,
+  })
+  @IsInt({ message: 'La calificación debe ser un número entero' })
+  @Max(5, { message: 'La calificación debe ser entre 1 y 5' })
+  @Min(1, { message: 'La calificación debe ser entre 1 y 5' })
+  @IsNotEmpty({ message: 'La calificación es requerida' })
+  rating: number;
+}

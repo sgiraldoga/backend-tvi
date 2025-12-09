@@ -1,13 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
+import { DestiniesModule } from './destinies/destinies.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
+import { ReviewsModule } from './reviews/reviews.module';
+import { StarshipModule } from './starship/starship.module';
+import { CabinModule } from './cabin/cabin.module';
+import { ActivityModule } from './activity/activity.module';
+import { S3Module } from './s3/s3.module';
+import { ReviewReplyModule } from './review-reply/review-reply.module';
+import { BooksModule } from './books/books.module';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -24,7 +36,27 @@ import { UserModule } from './user/user.module';
         logging: configService.get<boolean>('DB_LOGGING'),
       }),
     }),
+    AuthModule,
     UserModule,
+    StarshipModule,
+    DestiniesModule,
+    ReviewsModule,
+    CabinModule,
+    ActivityModule,
+    S3Module,
+    ReviewReplyModule,
+    BooksModule,
+    TicketsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}
