@@ -53,6 +53,33 @@ export class DestiniesController {
     return this.destiniesService.findOne(id);
   }
 
+  @Get('reviews-summary/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Obtener resumen de reseñas de un destino' })
+  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Resumen de reseñas obtenido exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        destinyId: { type: 'number', example: 1 },
+        averageRating: { type: 'number', example: 4.35 },
+        totalReviews: { type: 'number', example: 150 },
+        rating1: { type: 'number', example: 5 },
+        rating2: { type: 'number', example: 10 },
+        rating3: { type: 'number', example: 15 },
+        rating4: { type: 'number', example: 50 },
+        rating5: { type: 'number', example: 70 },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  getReviewsSummary(@Param('id', ParseIntPipe) id: number) {
+    return this.destiniesService.getReviewsSummary(id);
+  }
+
   @Roles('admin')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un destino' })
