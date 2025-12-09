@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Destiny } from './entities/destiny.entity';
 import { Repository } from 'typeorm';
 import { Activity } from 'src/activity/entities/activity.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Injectable()
 export class DestiniesService {
@@ -15,6 +16,9 @@ export class DestiniesService {
 
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
+
+    @InjectRepository(Review)
+    private readonly reviewRepository: Repository<Review>,
   ) {}
 
   async create(createDestinyDto: CreateDestinyDto): Promise<Destiny> {
@@ -124,5 +128,49 @@ export class DestiniesService {
   async remove(id: number): Promise<void> {
     await this.destinyRepository.softDelete(id);
     await this.activityRepository.softDelete({ destiny: { id } });
+  }
+
+  async getReviewsSummary(destinyId: number) {
+    const destiny = await this.destinyRepository.findOne({ where: { id: destinyId } });
+    if (!destiny) {
+      throw new NotFoundException(`Destino con ID ${destinyId} no encontrado`);
+    }
+
+    const reviews = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('review.rating', 'rating')
+      .addSelect('COUNT(*)', 'count')
+      .where('review.destiny_id = :destinyId', { destinyId })
+      .groupBy('review.rating')
+      .getRawMany();
+
+    const ratingCounts = {
+      rating1: 0,
+      rating2: 0,
+      rating3: 0,
+      rating4: 0,
+      rating5: 0,
+    };
+
+    let totalReviews = 0;
+    let weightedSum = 0;
+
+    reviews.forEach(review => {
+      const rating = parseInt(String(review.rating));
+      const count = parseInt(String(review.count));
+
+      ratingCounts[`rating${rating}`] = count;
+      totalReviews += count;
+      weightedSum += rating * count;
+    });
+
+    const averageRating = totalReviews > 0 ? Number((weightedSum / totalReviews).toFixed(2)) : 0;
+
+    return {
+      destinyId,
+      averageRating,
+      totalReviews,
+      ...ratingCounts,
+    };
   }
 }

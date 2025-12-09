@@ -14,17 +14,20 @@ import { CreateStarshipDto } from './dto/create-starship.dto';
 import { UpdateStarshipDto } from './dto/update-starship.dto';
 import { UpdateStarshipStatusDto } from './dto/update-starship-status.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('starship')
 export class StarshipController {
   constructor(private readonly starshipService: StarshipService) {}
 
+  @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.starshipService.findAll();
   }
 
+  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {

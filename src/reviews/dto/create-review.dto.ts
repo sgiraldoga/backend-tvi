@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsString, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReviewDto {
@@ -26,7 +26,7 @@ export class CreateReviewDto {
     description: 'Contenido de la reseña',
     example: 'Increíble experiencia en Marte. Los paisajes rojos son impresionantes.',
   })
-  @IsString()
+  @IsString({ message: 'El contenido debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El contenido es requerido' })
   content: string;
 
@@ -36,7 +36,7 @@ export class CreateReviewDto {
     minimum: 1,
     maximum: 5,
   })
-  @IsNumber()
+  @IsInt({ message: 'La calificación debe ser un número entero' })
   @Max(5, { message: 'La calificación debe ser entre 1 y 5' })
   @Min(1, { message: 'La calificación debe ser entre 1 y 5' })
   @IsNotEmpty({ message: 'La calificación es requerida' })

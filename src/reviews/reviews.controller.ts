@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  Query,
   ParseIntPipe,
   HttpCode,
   HttpStatus,
@@ -13,15 +12,16 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { FilterReviewDto } from './dto/filter-review.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
-@ApiTags('reviews')
+@ApiTags('review')
 @ApiBearerAuth('JWT-auth')
-@Controller('reviews')
+@Controller('review')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Crear una nueva reseña' })
   @ApiResponse({ status: 201, description: 'Reseña creada exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
@@ -31,15 +31,21 @@ export class ReviewsController {
     return this.reviewsService.create(createReviewDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Obtener todas las reseñas con filtros y paginación' })
+  @Public()
+  @Get('destiny/:destinyId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Obtener todas las reseñas de un destino' })
+  @ApiParam({ name: 'destinyId', description: 'ID del destino', type: Number })
   @ApiResponse({ status: 200, description: 'Lista de reseñas obtenida exitosamente' })
   @ApiResponse({ status: 401, description: 'No autorizado' })
-  findAll(@Query() filters: FilterReviewDto) {
-    return this.reviewsService.findAll(filters);
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  findByDestiny(@Param('destinyId', ParseIntPipe) destinyId: number) {
+    return this.reviewsService.findByDestiny(destinyId);
   }
 
+  @Public()
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Obtener una reseña por ID' })
   @ApiParam({ name: 'id', description: 'ID de la reseña', type: Number })
   @ApiResponse({ status: 200, description: 'Reseña encontrada' })

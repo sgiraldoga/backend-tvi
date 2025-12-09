@@ -33,7 +33,7 @@ export class Destiny {
   atmosphere: AtmosphereType;
 
   @Column({ type: 'bigint' })
-  population: string;
+  population: number;
 
   @Column({ name: 'average_temperature', type: 'float' })
   averageTemperature: number;

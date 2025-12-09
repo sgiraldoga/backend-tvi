@@ -14,6 +14,7 @@ import { CabinService } from './cabin.service';
 import { UpdateCabinDto } from './dto/update-cabin.dto';
 import { CreateCabinDto } from './dto/create-cabin.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('cabin')
 export class CabinController {
@@ -29,6 +30,7 @@ export class CabinController {
     return this.cabinService.create(starshipId, createCabinDto);
   }
 
+  @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
@@ -41,6 +43,7 @@ export class CabinController {
     return this.cabinService.findOne(id);
   }
 
+  @Public()
   @Get('starship/:starshipId')
   @HttpCode(HttpStatus.OK)
   findByStarship(@Param('starshipId', ParseIntPipe) starshipId: number) {

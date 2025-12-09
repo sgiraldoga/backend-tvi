@@ -17,6 +17,7 @@ import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
 import { FilterDestinyDto } from './dto/filter-destiny.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('destiny')
 @ApiBearerAuth('JWT-auth')
@@ -35,6 +36,7 @@ export class DestiniesController {
     return this.destiniesService.create(createDestinyDto);
   }
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Obtener todos los destinos con filtros y paginación' })
   @ApiResponse({ status: 200, description: 'Lista de destinos obtenida exitosamente' })
@@ -43,6 +45,7 @@ export class DestiniesController {
     return this.destiniesService.findAll(filters);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un destino por ID' })
   @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
@@ -51,6 +54,34 @@ export class DestiniesController {
   @ApiResponse({ status: 404, description: 'Destino no encontrado' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.destiniesService.findOne(id);
+  }
+
+  @Public()
+  @Get('reviews-summary/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Obtener resumen de reseñas de un destino' })
+  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Resumen de reseñas obtenido exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        destinyId: { type: 'number', example: 1 },
+        averageRating: { type: 'number', example: 4.35 },
+        totalReviews: { type: 'number', example: 150 },
+        rating1: { type: 'number', example: 5 },
+        rating2: { type: 'number', example: 10 },
+        rating3: { type: 'number', example: 15 },
+        rating4: { type: 'number', example: 50 },
+        rating5: { type: 'number', example: 70 },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  getReviewsSummary(@Param('id', ParseIntPipe) id: number) {
+    return this.destiniesService.getReviewsSummary(id);
   }
 
   @Roles('admin')
