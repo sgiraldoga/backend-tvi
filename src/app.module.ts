@@ -10,6 +10,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StarshipModule } from './starship/starship.module';
 import { CabinModule } from './cabin/cabin.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CabinModule } from './cabin/cabin.module';
     DestiniesModule,
     ReviewsModule,
     CabinModule,
+    ActivityModule,
   ],
   providers: [
     {

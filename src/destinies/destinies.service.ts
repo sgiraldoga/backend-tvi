@@ -1,51 +1,26 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
 import { FilterDestinyDto } from './dto/filter-destiny.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Destiny } from './entities/destiny.entity';
 import { Repository } from 'typeorm';
+import { Activity } from 'src/activity/entities/activity.entity';
 
 @Injectable()
 export class DestiniesService {
-  private readonly defaultSelect: (keyof Destiny)[] = [
-    'id',
-    'name',
-    'description',
-    'images',
-    'price',
-    'system',
-    'gravity',
-    'atmosphere',
-    'dayNightCycle',
-    'population',
-    'averageTemperature',
-    'distance',
-  ];
-
   constructor(
     @InjectRepository(Destiny)
     private readonly destinyRepository: Repository<Destiny>,
+
+    @InjectRepository(Activity)
+    private readonly activityRepository: Repository<Activity>,
   ) {}
 
-  async create(createDestinyDto: CreateDestinyDto) {
+  async create(createDestinyDto: CreateDestinyDto): Promise<Destiny> {
     const destiny = this.destinyRepository.create(createDestinyDto);
-
-    try {
-      const savedDestiny = await this.destinyRepository.save(destiny);
-
-      return savedDestiny;
-    } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('El destino ya existe o el nombre está duplicado');
-      }
-      throw new BadRequestException(error.message);
-    }
+    await this.destinyRepository.save(destiny);
+    return this.findOne(destiny.id);
   }
 
   async findAll(filters: FilterDestinyDto) {
@@ -65,7 +40,9 @@ export class DestiniesService {
       order = 'ASC',
     } = filters;
 
-    const queryBuilder = this.destinyRepository.createQueryBuilder('destiny');
+    const queryBuilder = this.destinyRepository
+      .createQueryBuilder('destiny')
+      .leftJoinAndSelect('destiny.activities', 'activities');
 
     if (name) {
       queryBuilder.andWhere('destiny.name ILIKE :name', { name: `%${name}%` });
@@ -122,10 +99,10 @@ export class DestiniesService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Destiny> {
     const destiny = await this.destinyRepository.findOne({
-      select: this.defaultSelect,
       where: { id },
+      relations: ['activities'],
     });
 
     if (!destiny) {
@@ -135,20 +112,17 @@ export class DestiniesService {
     return destiny;
   }
 
-  async update(id: number, updateDestinyDto: UpdateDestinyDto) {
+  async update(id: number, updateDestinyDto: UpdateDestinyDto): Promise<Destiny> {
     if (Object.keys(updateDestinyDto).length === 0) {
       throw new BadRequestException('No hay campos para actualizar');
     }
 
-    const destiny = await this.findOne(id);
-    Object.assign(destiny, updateDestinyDto);
-
-    return this.destinyRepository.save(destiny);
+    await this.destinyRepository.update(id, updateDestinyDto);
+    return this.findOne(id);
   }
 
-  async remove(id: number) {
-    const destiny = await this.findOne(id);
-
-    return this.destinyRepository.remove(destiny);
+  async remove(id: number): Promise<void> {
+    await this.destinyRepository.softDelete(id);
+    await this.activityRepository.softDelete({ destiny: { id } });
   }
 }

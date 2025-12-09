@@ -1,12 +1,13 @@
-import { Check, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AtmosphereType } from '../../enums/atmosphere-type.enum';
+import { Activity } from 'src/activity/entities/activity.entity';
 
 @Entity('destiny')
 export class Destiny {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, type: 'varchar', length: 150 })
+  @Column({ type: 'varchar', length: 150 })
   name: string;
 
   @Column({ type: 'text' })
@@ -44,10 +45,6 @@ export class Destiny {
   position: { x: number; y: number };
 
   @Column({ type: 'int' })
-  @Check(`"rating" >= 1 AND "rating" <= 5`)
-  rating: number;
-
-  @Column({ type: 'int' })
   price: number;
 
   @Column({
@@ -57,4 +54,10 @@ export class Destiny {
     name: 'liked_by_users',
   })
   likedByUsers: number[];
+
+  @DeleteDateColumn({ name: 'deleted_at', select: false })
+  deletedAt: Date;
+
+  @OneToMany(() => Activity, activity => activity.destiny, { eager: false, cascade: ['insert'] })
+  activities: Activity[];
 }

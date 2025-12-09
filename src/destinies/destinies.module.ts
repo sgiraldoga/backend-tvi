@@ -3,9 +3,10 @@ import { DestiniesService } from './destinies.service';
 import { DestiniesController } from './destinies.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Destiny } from './entities/destiny.entity';
+import { Activity } from 'src/activity/entities/activity.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Destiny])],
+  imports: [TypeOrmModule.forFeature([Destiny, Activity])],
   controllers: [DestiniesController],
   providers: [DestiniesService],
 })

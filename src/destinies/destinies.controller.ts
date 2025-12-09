@@ -16,13 +16,15 @@ import { DestiniesService } from './destinies.service';
 import { CreateDestinyDto } from './dto/create-destiny.dto';
 import { UpdateDestinyDto } from './dto/update-destiny.dto';
 import { FilterDestinyDto } from './dto/filter-destiny.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@ApiTags('destinies')
+@ApiTags('destiny')
 @ApiBearerAuth('JWT-auth')
-@Controller('destinies')
+@Controller('destiny')
 export class DestiniesController {
   constructor(private readonly destiniesService: DestiniesService) {}
 
+  @Roles('admin')
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo destino' })
   @ApiResponse({ status: 201, description: 'Destino creado exitosamente' })
@@ -51,6 +53,7 @@ export class DestiniesController {
     return this.destiniesService.findOne(id);
   }
 
+  @Roles('admin')
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un destino' })
   @ApiParam({ name: 'id', description: 'ID del destino a actualizar', type: Number })
@@ -62,6 +65,7 @@ export class DestiniesController {
     return this.destiniesService.update(id, updateDestinyDto);
   }
 
+  @Roles('admin')
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Eliminar un destino' })
