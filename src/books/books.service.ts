@@ -33,7 +33,6 @@ export class BooksService {
   async create(createBookDto: CreateBookDto): Promise<Book> {
     const { userId, destinyId, cabinId, departureDate, returnDate, passengers } = createBookDto;
 
-    // Validar fechas
     const departure = new Date(departureDate);
     const returnD = new Date(returnDate);
     const today = new Date();
@@ -258,9 +257,15 @@ export class BooksService {
       const availableCapacity = data.starship.capacity - occupiedCapacity;
 
       if (availableCapacity > 0) {
+        // Mapear cabinas sin incluir starship
+        const cabinsWithoutStarship = data.cabins.map(cabin => {
+          const { starship: _starship, ...cabinData } = cabin;
+          return cabinData;
+        });
+
         result.push({
           ...data.starship,
-          cabins: data.cabins,
+          cabins: cabinsWithoutStarship as any,
           availableCapacity,
         });
       }
