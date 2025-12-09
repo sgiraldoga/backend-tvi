@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsEnum,
   IsUrl,
-  IsNumberString,
   IsPositive,
   IsInt,
   IsArray,
@@ -96,10 +95,9 @@ export class CreateDestinyDto {
     description: 'Población del destino',
     example: '2500000',
   })
-  @IsString({ message: 'La población debe ser una cadena de texto' })
-  @IsNumberString()
+  @IsNumber()
   @IsNotEmpty({ message: 'La población es requerida' })
-  population: string;
+  population: number;
 
   @ApiProperty({
     description: 'Temperatura promedio en grados Celsius',
