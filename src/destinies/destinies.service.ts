@@ -83,27 +83,35 @@ export class DestiniesService {
 
     const total = await queryBuilder.getCount();
 
-    // Pagination
     const skip = (page - 1) * limit;
     queryBuilder.skip(skip).take(limit);
 
-    // sorting
     const validSortFields = ['name', 'price', 'distance', 'averageTemperature'];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'name';
     queryBuilder.orderBy(`destiny.${sortField}`, order === 'DESC' ? 'DESC' : 'ASC');
 
     const data = await queryBuilder.getMany();
 
+    const dataWithReviews = await Promise.all(
+      data.map(async destiny => {
+        const reviewSummary = await this.calculateReviewsSummary(destiny.id);
+        return {
+          ...destiny,
+          reviewSummary,
+        };
+      }),
+    );
+
     return {
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      result: data,
+      result: dataWithReviews,
     };
   }
 
-  async findOne(id: number): Promise<Destiny> {
+  async findOne(id: number): Promise<any> {
     const destiny = await this.destinyRepository.findOne({
       where: { id },
       relations: ['activities'],
@@ -113,7 +121,12 @@ export class DestiniesService {
       throw new NotFoundException(`Destino con ID ${id} no encontrado`);
     }
 
-    return destiny;
+    const reviewSummary = await this.calculateReviewsSummary(id);
+
+    return {
+      ...destiny,
+      reviewSummary,
+    };
   }
 
   async update(id: number, updateDestinyDto: UpdateDestinyDto): Promise<Destiny> {
@@ -136,6 +149,10 @@ export class DestiniesService {
       throw new NotFoundException(`Destino con ID ${destinyId} no encontrado`);
     }
 
+    return this.calculateReviewsSummary(destinyId);
+  }
+
+  private async calculateReviewsSummary(destinyId: number) {
     const reviews = await this.reviewRepository
       .createQueryBuilder('review')
       .select('review.rating', 'rating')
@@ -167,7 +184,6 @@ export class DestiniesService {
     const averageRating = totalReviews > 0 ? Number((weightedSum / totalReviews).toFixed(2)) : 0;
 
     return {
-      destinyId,
       averageRating,
       totalReviews,
       ...ratingCounts,

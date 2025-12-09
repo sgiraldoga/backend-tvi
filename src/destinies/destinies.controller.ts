@@ -46,17 +46,6 @@ export class DestiniesController {
   }
 
   @Public()
-  @Get(':id')
-  @ApiOperation({ summary: 'Obtener un destino por ID' })
-  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
-  @ApiResponse({ status: 200, description: 'Destino encontrado' })
-  @ApiResponse({ status: 401, description: 'No autorizado' })
-  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.destiniesService.findOne(id);
-  }
-
-  @Public()
   @Get('reviews-summary/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Obtener resumen de reseñas de un destino' })
@@ -67,7 +56,6 @@ export class DestiniesController {
     schema: {
       type: 'object',
       properties: {
-        destinyId: { type: 'number', example: 1 },
         averageRating: { type: 'number', example: 4.35 },
         totalReviews: { type: 'number', example: 150 },
         rating1: { type: 'number', example: 5 },
@@ -82,6 +70,17 @@ export class DestiniesController {
   @ApiResponse({ status: 404, description: 'Destino no encontrado' })
   getReviewsSummary(@Param('id', ParseIntPipe) id: number) {
     return this.destiniesService.getReviewsSummary(id);
+  }
+
+  @Public()
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener un destino por ID' })
+  @ApiParam({ name: 'id', description: 'ID del destino', type: Number })
+  @ApiResponse({ status: 200, description: 'Destino encontrado' })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  @ApiResponse({ status: 404, description: 'Destino no encontrado' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.destiniesService.findOne(id);
   }
 
   @Roles('admin')
