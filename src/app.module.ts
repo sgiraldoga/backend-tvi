@@ -11,6 +11,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { StarshipModule } from './starship/starship.module';
 import { CabinModule } from './cabin/cabin.module';
 import { ActivityModule } from './activity/activity.module';
+import { BooksModule } from './books/books.module';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { ActivityModule } from './activity/activity.module';
     ReviewsModule,
     CabinModule,
     ActivityModule,
+    BooksModule,
+    TicketsModule,
   ],
   providers: [
     {
